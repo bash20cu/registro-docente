@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import firebaseApp from "../Credentials";
 import { getAuth, signOut } from "firebase/auth";
 import {getFirestore, collection, addDoc, getDocs, doc, deleteDoc,getDoc} from "firebase/firestore";
@@ -17,6 +17,7 @@ const Home = ({ correoUsuario }) => {
         }
 
     const [usuario, setUsuario] = useState(valorInicial);
+    const [lista, setLista] = useState([]);
 
     const capturarDatos = (e) => {
         setUsuario({
@@ -28,8 +29,40 @@ const Home = ({ correoUsuario }) => {
     const enviarDatos = async (e) => {
         e.preventDefault();
         console.log(usuario);
+
+        try {
+            await addDoc(collection(db,"alumnos"), {
+                ...usuario
+            });
+            
+        } catch (error) {
+            console.log(error);            
+        }
+
+
         setUsuario(valorInicial);
     }
+
+    {/* Funciones para renderizar la lista de usuarios */}
+
+    useEffect(() => {
+        const obtenerDatos = async () => {
+            try {
+                const datos = await getDocs(collection(db,"alumnos"));
+                const arrayDatos = []
+                datos.forEach((dato) => {
+                    arrayDatos.push({...dato.data(), id: dato.id})
+                })
+                setLista(arrayDatos);
+                
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        obtenerDatos();
+    },[lista]);
+
+
 
   return (
     <div className="container">
@@ -64,8 +97,26 @@ const Home = ({ correoUsuario }) => {
           </form>
         </div>
         {/* esta seccion es para la tabla de usuarios */}
-        <div className="col-md-8">
-          <h2 className="text-center mb-3">Lista de usuarios</h2>
+        <div className="col-md-6">
+          <h2 className="text-center mb-2 ">Lista de usuarios</h2>
+          <div className="container card">
+            <div className="card-body">
+                {
+                    lista.map(lista => (
+                        <div  key={lista.id}>
+                            <p>Nombre: {lista.nombre}</p>
+                            <p>Apellido: {lista.apellido1}</p>
+                            <p>Apellido: {lista.apellido2}</p>
+                            <p>Edad: {lista.edad}</p>
+                            <p>Grupo: {lista.grupo}</p>
+                            <button className="btn btn-danger float-end" >Eliminar</button>
+                            <button className="btn btn-success">Editar</button>
+                            <hr/>
+                        </div>
+                    ))
+                }
+            </div>
+          </div>
         </div>
       </div>
     </div>
