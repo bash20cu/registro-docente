@@ -1,16 +1,15 @@
 {
   "files": {
-    "main.css": "/registro-docente/static/css/main.073c9b0a.css",
-    "main.js": "/registro-docente/static/js/main.c80b0fba.js",
-    "static/js/787.f0079ade.chunk.js": "/registro-docente/static/js/787.f0079ade.chunk.js",
-    "static/media/logo.svg": "/registro-docente/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "main.css": "/registro-docente/static/css/main.52c412ae.css",
+    "main.js": "/registro-docente/static/js/main.6ee42cbe.js",
+    "static/media/1.jpeg": "/registro-docente/static/media/1.b164bb2191d927ed2c1f.jpeg",
+    "static/media/3.jpeg": "/registro-docente/static/media/3.11cc294d6e14ead62e9e.jpeg",
     "index.html": "/registro-docente/index.html",
-    "main.073c9b0a.css.map": "/registro-docente/static/css/main.073c9b0a.css.map",
-    "main.c80b0fba.js.map": "/registro-docente/static/js/main.c80b0fba.js.map",
-    "787.f0079ade.chunk.js.map": "/registro-docente/static/js/787.f0079ade.chunk.js.map"
+    "main.52c412ae.css.map": "/registro-docente/static/css/main.52c412ae.css.map",
+    "main.6ee42cbe.js.map": "/registro-docente/static/js/main.6ee42cbe.js.map"
   },
   "entrypoints": [
-    "static/css/main.073c9b0a.css",
-    "static/js/main.c80b0fba.js"
+    "static/css/main.52c412ae.css",
+    "static/js/main.6ee42cbe.js"
   ]
 }
