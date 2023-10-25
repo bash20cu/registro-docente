@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
 import firebaseApp from "../Credentials";
 import { getAuth, signOut } from "firebase/auth";
-import {getFirestore, collection, addDoc, getDocs, doc, deleteDoc,getDoc} from "firebase/firestore";
+import {getFirestore, collection, addDoc, getDocs, doc, deleteDoc,getDoc, setDoc} from "firebase/firestore";
 
 const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
+
 
 const Home = ({ correoUsuario }) => {
 
@@ -15,9 +16,10 @@ const Home = ({ correoUsuario }) => {
         edad: '',
         grupo: ''
         }
-
+    //variables de estado
     const [usuario, setUsuario] = useState(valorInicial);
     const [lista, setLista] = useState([]);
+    const [subId, setsubId] = useState('');
 
     const capturarDatos = (e) => {
         setUsuario({
@@ -25,22 +27,32 @@ const Home = ({ correoUsuario }) => {
             [e.target.name]: e.target.value
         })    
     }
-
-    const enviarDatos = async (e) => {
+    
+    //Funcion para guardar los datos a la base de datos
+    const guardarDatos = async (e) => {
         e.preventDefault();
         console.log(usuario);
 
-        try {
-            await addDoc(collection(db,"alumnos"), {
-                ...usuario
-            });
-            
-        } catch (error) {
-            console.log(error);            
+        if(subId === ''){
+          try {
+              await addDoc(collection(db,"alumnos"), {
+                  ...usuario
+              });
+              
+          } catch (error) {
+              console.log(error);            
+          }
+        }else{
+          try {
+            await setDoc(doc(db,"alumnos",subId),{
+              ...usuario
+            })            
+          } catch (error) {
+            console.log(error);
+          }
         }
-
-
         setUsuario(valorInicial);
+        setsubId('');
     }
 
     {/* Funciones para renderizar la lista de usuarios */}
@@ -62,6 +74,30 @@ const Home = ({ correoUsuario }) => {
         obtenerDatos();
     },[lista]);
 
+    //Funcion para eliminar el usuario
+    const eliminarUsuario = async (id) => {
+        try {
+            await deleteDoc(doc(db, "alumnos", id));
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    //Funcion para actualizar el usuario
+    const getOne = async (id) => {
+      try {
+        const datos = await getDoc(doc(db, "alumnos", id));
+        setUsuario(datos.data())
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    useEffect(() => {
+      if(subId !== ''){
+        getOne(subId);
+      }
+    },[subId]);
 
 
   return (
@@ -78,7 +114,7 @@ const Home = ({ correoUsuario }) => {
         {/* esta seccion es para el formulario */}
         <div className="col-md-4">
           <h3 className="text-center mb-3">Formulario de registro</h3>
-          <form onSubmit={enviarDatos}>
+          <form onSubmit={guardarDatos}>
             <div className="card card-body">
               <div className="form-group">
                 <input type="text" className="form-control mb-2" placeholder="Nombre" name="nombre"
@@ -92,7 +128,9 @@ const Home = ({ correoUsuario }) => {
                 <input type="text" className="form-control mb-2" placeholder="Grupo" name="grupo" 
                 onChange={capturarDatos} value={usuario.grupo}/>
               </div>
-                <button className="btn btn-primary mb-2">Guardar</button>
+                <button className="btn btn-primary mb-2">
+                  {subId === '' ? 'Guardar' : 'Actualizar'}
+                </button>
             </div>
           </form>
         </div>
@@ -109,8 +147,8 @@ const Home = ({ correoUsuario }) => {
                             <p>Apellido: {lista.apellido2}</p>
                             <p>Edad: {lista.edad}</p>
                             <p>Grupo: {lista.grupo}</p>
-                            <button className="btn btn-danger float-end" >Eliminar</button>
-                            <button className="btn btn-success">Editar</button>
+                            <button className="btn btn-danger m-2" onClick={()=>eliminarUsuario(lista.id)} >Eliminar</button>
+                            <button className="btn btn-success m-2" onClick={()=>setsubId(lista.id)}>Editar</button>
                             <hr/>
                         </div>
                     ))
