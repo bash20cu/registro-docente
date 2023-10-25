@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/registro-docente/static/css/main.52c412ae.css",
-    "main.js": "/registro-docente/static/js/main.d956556c.js",
+    "main.js": "/registro-docente/static/js/main.4a41ce4f.js",
     "static/media/1.jpeg": "/registro-docente/static/media/1.b164bb2191d927ed2c1f.jpeg",
     "static/media/3.jpeg": "/registro-docente/static/media/3.11cc294d6e14ead62e9e.jpeg",
     "index.html": "/registro-docente/index.html",
     "main.52c412ae.css.map": "/registro-docente/static/css/main.52c412ae.css.map",
-    "main.d956556c.js.map": "/registro-docente/static/js/main.d956556c.js.map"
+    "main.4a41ce4f.js.map": "/registro-docente/static/js/main.4a41ce4f.js.map"
   },
   "entrypoints": [
     "static/css/main.52c412ae.css",
-    "static/js/main.d956556c.js"
+    "static/js/main.4a41ce4f.js"
   ]
 }
