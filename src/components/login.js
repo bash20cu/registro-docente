@@ -7,9 +7,67 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 
-import Uno from "../images/1.jpeg";
-import Dos from "../images/2.jpeg";
-import Tres from "../images/3.jpeg";
+
+import {
+  Box,
+  Flex,
+  Stack,
+  Heading,
+  Text,
+  Container,
+  Input,
+  Button,
+  SimpleGrid,
+  Avatar,
+  AvatarGroup,
+  useBreakpointValue,
+  IconProps,
+  Icon,
+} from "@chakra-ui/react";
+
+const avatars = [
+  {
+    name: "Ryan Florence",
+    url: "https://bit.ly/ryan-florence",
+  },
+  {
+    name: "Segun Adebayo",
+    url: "https://bit.ly/sage-adebayo",
+  },
+  {
+    name: "Kent Dodds",
+    url: "https://bit.ly/kent-c-dodds",
+  },
+  {
+    name: "Prosper Otemuyiwa",
+    url: "https://bit.ly/prosper-baba",
+  },
+  {
+    name: "Christian Nwamba",
+    url: "https://bit.ly/code-beast",
+  },
+];
+const Blur = (props: IconProps) => {
+  return (
+    <Icon
+      width={useBreakpointValue({ base: "100%", md: "40vw", lg: "30vw" })}
+      zIndex={useBreakpointValue({ base: -1, md: -1, lg: 0 })}
+      height="560px"
+      viewBox="0 0 528 560"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <circle cx="71" cy="61" r="111" fill="#F56565" />
+      <circle cx="244" cy="106" r="139" fill="#ED64A6" />
+      <circle cy="291" r="139" fill="#ED64A6" />
+      <circle cx="80.5" cy="189.5" r="101.5" fill="#ED8936" />
+      <circle cx="196.5" cy="317.5" r="101.5" fill="#ECC94B" />
+      <circle cx="70.5" cy="458.5" r="101.5" fill="#48BB78" />
+      <circle cx="426.5" cy="-0.5" r="101.5" fill="#4299E1" />
+    </Icon>
+  );
+};
 
 const auth = getAuth(firebaseApp);
 
@@ -23,110 +81,194 @@ const Login = () => {
 
     if (registro) {
       try {
-        
         await createUserWithEmailAndPassword(auth, correo, clave);
       } catch (error) {
         console.log(error);
       }
     } else {
       try {
-        
         await signInWithEmailAndPassword(auth, correo, clave);
       } catch (error) {
-        console.log(error); 
+        console.log(error);
       }
     }
   };
 
   return (
-    <div className="row container p-4">
-      {/*Esta es la parte de las imagenes */}
-      <div className="col-md-8">
-        <div id="carouselExample" className="carousel slide">
-          <div class="carousel-inner">
-            <div class="carousel-item active">
-              <img src={Uno} className="tamanno-imagen" alt="..." />
-            </div>
-            <div class="carousel-item">
-              <img src={Dos} className="tamanno-imagen" alt="..." />
-            </div>
-            <div class="carousel-item">
-              <img src={Tres} className="tamanno-imagen" alt="..." />
-            </div>
-          </div>
-          <button
-            className="carousel-control-prev"
-            type="button"
-            data-bs-target="#carouselExample"
-            data-bs-slide="prev"
+    <Box position={"relative"}>
+      <Container
+        as={SimpleGrid}
+        maxW={"6xl"}
+        columns={{ base: 1, md: 2 }}
+        spacing={{ base: 10, lg: 32 }}
+        py={{ base: 10, sm: 20, lg: 32 }}
+      >
+        <Stack spacing={{ base: 10, md: 20 }}>
+          <Heading
+            lineHeight={1.1}
+            fontSize={{ base: "3xl", sm: "4xl", md: "5xl", lg: "6xl" }}
           >
-            <span
-              className="carousel-control-prev-icon"
-              aria-hidden="true"
-            ></span>
-            <span className="visually-hidden">Previous</span>
-          </button>
-          <button
-            class="carousel-control-next"
-            type="button"
-            data-bs-target="#carouselExample"
-            data-bs-slide="next"
-          >
-            <span
-              className="carousel-control-next-icon"
-              aria-hidden="true"
-            ></span>
-            <span className="visually-hidden">Next</span>
-          </button>
-        </div>
-      </div>
-
-      {/*Esta es la parte del formulario */}
-      <div className="col-md-4 p-4">
-        <div className="mt-5 ms-5">
-          <h1>{registro ? "Registrate" : "Inicia Sesion"}</h1>
-          <form onSubmit={handlerSubmit}>
-            <div className="mb-3">
-              <label for="exampleInputEmail1" className="form-label">
-                Correo Electronico:{" "}
-              </label>
-              <input
-                type="email"
-                id="email"
-                className="form-control"
-                aria-describedby="emailHelp"
-                placeholder="Ingresar Correo Electrónico"
+            Registro Docente{" "}
+            <Text
+              as={"span"}
+              bgGradient="linear(to-r, red.400,pink.400)"
+              bgClip="text"
+            >
+              &
+            </Text>{" "}
+            TO-DO
+          </Heading>
+          <Stack direction={"row"} spacing={4} align={"center"}>
+            <AvatarGroup>
+              {avatars.map((avatar) => (
+                <Avatar
+                  key={avatar.name}
+                  name={avatar.name}
+                  src={avatar.url}
+                  // eslint-disable-next-line react-hooks/rules-of-hooks
+                  size={useBreakpointValue({ base: "md", md: "lg" })}
+                  position={"relative"}
+                  zIndex={2}
+                  _before={{
+                    content: '""',
+                    width: "full",
+                    height: "full",
+                    rounded: "full",
+                    transform: "scale(1.125)",
+                    bgGradient: "linear(to-bl, red.400,pink.400)",
+                    position: "absolute",
+                    zIndex: -1,
+                    top: 0,
+                    left: 0,
+                  }}
+                />
+              ))}
+            </AvatarGroup>
+            <Text fontFamily={"heading"} fontSize={{ base: "4xl", md: "6xl" }}>
+              +
+            </Text>
+            <Flex
+              align={"center"}
+              justify={"center"}
+              fontFamily={"heading"}
+              fontSize={{ base: "sm", md: "lg" }}
+              bg={"gray.800"}
+              color={"white"}
+              rounded={"full"}
+              minWidth={useBreakpointValue({ base: "44px", md: "60px" })}
+              minHeight={useBreakpointValue({ base: "44px", md: "60px" })}
+              position={"relative"}
+              _before={{
+                content: '""',
+                width: "full",
+                height: "full",
+                rounded: "full",
+                transform: "scale(1.125)",
+                bgGradient: "linear(to-bl, orange.400,yellow.400)",
+                position: "absolute",
+                zIndex: -1,
+                top: 0,
+                left: 0,
+              }}
+            >
+              Tú
+            </Flex>
+          </Stack>
+        </Stack>
+        <Stack
+          bg={"gray.50"}
+          rounded={"xl"}
+          p={{ base: 4, sm: 6, md: 8 }}
+          spacing={{ base: 8 }}
+          maxW={{ lg: "lg" }}
+        >
+          <Stack spacing={4}>
+            <Heading
+              color={"gray.800"}
+              lineHeight={1.1}
+              fontSize={{ base: "2xl", sm: "3xl", md: "4xl" }}
+            >
+              {registro ? "Registrate" : "Inicia Sesion"}
+              <Text
+                as={"span"}
+                bgGradient="linear(to-r, red.400,pink.400)"
+                bgClip="text"
+              >
+                !
+              </Text>
+            </Heading>
+            <Text color={"gray.500"} fontSize={{ base: "sm", sm: "md" }}>
+              TO-DO
+            </Text>
+          </Stack>
+          <Box as={"form"} mt={6} onSubmit={handlerSubmit}>
+            <Stack spacing={2}>
+            <Input
+                placeholder="Correo Electronico"
+                bg={"gray.100"}
+                border={0}
+                color={"gray.500"}
+                type={"email"}
+                id={"email"}
+                _placeholder={{
+                  color: "gray.500",
+                }}
               />
-            </div>
-            <div className="mb-3">
-              <label for="exampleInputEmail1" className="form-label">
-                Clave
-              </label>
-              <input
-                type="password"
-                id="clave"
-                className="form-control"
-                aria-describedby="emailHelp"
-                placeholder="Ingresar Clave"
+              <Input
+                placeholder="Clave"
+                bg={"gray.100"}
+                border={0}
+                color={"gray.500"}
+                type={"password"}
+                id={"clave"}
+                _placeholder={{
+                  color: "gray.500",
+                }}
               />
-            </div>
-            <button className="btn btn-primary" type="submit">
-              {registro ? "Registrate" : "Inicia sesion"}
-            </button>
-          </form>
-          <div className="form-group">
-            <button
-              className="btn btn-secondary mt-4 form-control"
+            </Stack>
+            <Button
+              fontFamily={"heading"}
+              mt={8}
+              w={"full"}
+              bgGradient="linear(to-r, red.400,pink.400)"
+              color={"white"}
+              type={"submit"}
+              _hover={{
+                bgGradient: "linear(to-r, red.400,pink.400)",
+                boxShadow: "xl",
+              }}              
+            >
+              {registro ? "Registrate" : "Inicia sesion"}              
+            </Button>
+            <Button
+              fontFamily={"heading"}
+              mt={6}
+              w={"full"}
+              bgGradient="linear(to-r, blue.400,pink.400)"
+              color={"white"}
+              _hover={{
+                bgGradient: "linear(to-r, red.400,blue.400)",
+                boxShadow: "xl",
+              }}
               onClick={() => setRegistro(!registro)}
             >
               {registro
                 ? "Ya tienes cuenta? Inicia sesion"
                 : "No tienes cuenta? Registrate"}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+              
+            </Button>
+          </Box>
+          
+        </Stack>
+      </Container>
+      <Blur
+        position={"absolute"}
+        top={-10}
+        left={-10}
+        style={{ filter: "blur(70px)" }}
+      />
+    </Box>
+   
   );
 };
 

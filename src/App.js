@@ -1,5 +1,9 @@
 import React, {useState} from 'react';
 import './App.css';
+import { BrowserRouter as Routes, Route } from 'react-router-dom';
+
+
+
 import Home from './components/home.js';
 import Login from './components/login.js';
 
@@ -22,6 +26,8 @@ function App() {
 
   return (
     <div className="App">
+ 
+      {/* {usuario && <SidebarWithHeader/>} */}
       {usuario ? <Home correoUsuario = {usuario.email} /> : <Login/>}
     </div>
   );
