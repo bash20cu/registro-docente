@@ -22,9 +22,19 @@ const Login = () => {
     const clave = e.target.clave.value;
 
     if (registro) {
-      await createUserWithEmailAndPassword(auth, correo, clave);
+      try {
+        
+        await createUserWithEmailAndPassword(auth, correo, clave);
+      } catch (error) {
+        console.log(error);
+      }
     } else {
-      await signInWithEmailAndPassword(auth, correo, clave);
+      try {
+        
+        await signInWithEmailAndPassword(auth, correo, clave);
+      } catch (error) {
+        console.log(error); 
+      }
     }
   };
 

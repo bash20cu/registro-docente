@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import firebaseApp from "../Credentials";
 import { getAuth, signOut } from "firebase/auth";
 import {getFirestore, collection, addDoc, getDocs, doc, deleteDoc,getDoc, setDoc} from "firebase/firestore";
+import DbTest from "./database.js";
+
 
 const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
@@ -30,58 +32,80 @@ const Home = ({ correoUsuario }) => {
     
     //Funcion para guardar los datos a la base de datos
     const guardarDatos = async (e) => {
-        e.preventDefault();
-        console.log(usuario);
-
-        if(subId === ''){
+      e.preventDefault();
+      console.log(usuario);
+  
+      if (subId === '') {
           try {
-              await addDoc(collection(db,"alumnos"), {
+              const docRef = await addDoc(collection(db, "alumnos"), {
                   ...usuario
               });
-              
+  
+              // Agregar el nuevo usuario a la lista
+              const newUser = { ...usuario, id: docRef.id };
+              setLista([...lista, newUser]);
+  
           } catch (error) {
-              console.log(error);            
+              console.log(error);
           }
-        }else{
+      } else {
           try {
-            await setDoc(doc(db,"alumnos",subId),{
-              ...usuario
-            })            
+              await setDoc(doc(db, "alumnos", subId), {
+                  ...usuario
+              });
+  
+              // Actualizar la lista con el usuario modificado
+              const updatedList = lista.map(item => {
+                  if (item.id === subId) {
+                      return { ...usuario, id: subId };
+                  }
+                  return item;
+              });
+              setLista(updatedList);
+  
           } catch (error) {
-            console.log(error);
+              console.log(error);
           }
-        }
-        setUsuario(valorInicial);
-        setsubId('');
-    }
+      }
+      setUsuario(valorInicial);
+      setsubId('');
+  }
 
     {/* Funciones para renderizar la lista de usuarios */}
 
     useEffect(() => {
-        const obtenerDatos = async () => {
+        const obtenerDatos = async () => {          
             try {
                 const datos = await getDocs(collection(db,"alumnos"));
                 const arrayDatos = []
                 datos.forEach((dato) => {
                     arrayDatos.push({...dato.data(), id: dato.id})
                 })
-                setLista(arrayDatos);
+                setLista(arrayDatos); 
+                            
                 
             } catch (error) {
                 console.log(error);
             }
         }
         obtenerDatos();
-    },[lista]);
+        
+        //DbTest();
+    },[]);
 
     //Funcion para eliminar el usuario
     const eliminarUsuario = async (id) => {
-        try {
-            await deleteDoc(doc(db, "alumnos", id));
-        } catch (error) {
-            console.log(error);
-        }
-    }
+      try {
+          await deleteDoc(doc(db, "alumnos", id));
+  
+          // Eliminar el usuario de la lista
+          const updatedList = lista.filter(item => item.id !== id);
+          setLista(updatedList);
+  
+      } catch (error) {
+          console.log(error);
+      }
+  }
 
     //Funcion para actualizar el usuario
     const getOne = async (id) => {
@@ -96,6 +120,7 @@ const Home = ({ correoUsuario }) => {
     useEffect(() => {
       if(subId !== ''){
         getOne(subId);
+        
       }
     },[subId]);
 
