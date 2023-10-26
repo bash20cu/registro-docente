@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import firebaseApp from "../Credentials";
 import { getAuth, signOut } from "firebase/auth";
 import {getFirestore, collection, addDoc, getDocs, doc, deleteDoc,getDoc, setDoc} from "firebase/firestore";
-import DbTest from "./database.js";
+import DbTest from "../components/database.js";
 
 
 const auth = getAuth(firebaseApp);
@@ -72,7 +72,6 @@ const Home = ({ correoUsuario }) => {
   }
 
     {/* Funciones para renderizar la lista de usuarios */}
-
     useEffect(() => {
         const obtenerDatos = async () => {          
             try {
@@ -127,12 +126,6 @@ const Home = ({ correoUsuario }) => {
 
   return (
     <div className="container">
-      <p>
-        Bienvenido, <strong>{correoUsuario}</strong>, Haz iniciaso sesión
-      </p>
-      <button className="btn btn-primary" onClick={() => signOut(auth)}>
-        Cerrar sesión
-      </button>
       <hr />
 
       <div className="row">

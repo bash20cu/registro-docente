@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import firebaseApp from "../Credentials";
+import { getFirestore, collection, addDoc, setDoc } from "firebase/firestore";
 
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-
 
 import {
   Box,
@@ -47,12 +47,12 @@ const avatars = [
     url: "https://bit.ly/code-beast",
   },
 ];
-const Blur = (props: IconProps) => {
+const Blur = (props) => {
   return (
     <Icon
       width={useBreakpointValue({ base: "100%", md: "40vw", lg: "30vw" })}
       zIndex={useBreakpointValue({ base: -1, md: -1, lg: 0 })}
-      height="560px"
+      height="660px"
       viewBox="0 0 528 560"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -70,29 +70,85 @@ const Blur = (props: IconProps) => {
 };
 
 const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
 
 const Login = () => {
   const [registro, setRegistro] = useState(false);
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [errorBase, setErrorBase] = useState(null);
 
   const handlerSubmit = async (e) => {
     e.preventDefault();
     const correo = e.target.email.value;
     const clave = e.target.clave.value;
+    
 
     if (registro) {
+      const nombre_usuario = e.target.nombre_usuario.value;
       try {
-        await createUserWithEmailAndPassword(auth, correo, clave);
+        // Attempt to save user data to Firestore first
+        await guardarDatos(nombre_usuario, new Date(), true);
+
+        // If saving data to Firestore is successful, proceed to create the user
+        try {
+          const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            correo,
+            clave
+          );
+          // At this point, user registration is complete
+          //console.log("User registered successfully:", userCredential.user);
+        } catch (error) {
+          setErrorBase(error.message);
+          console.log(errorBase);
+        }
       } catch (error) {
-        console.log(error);
+        setErrorBase(error.message);
       }
     } else {
       try {
         await signInWithEmailAndPassword(auth, correo, clave);
       } catch (error) {
+        setErrorBase(error.message);
         console.log(error);
       }
     }
   };
+
+  const guardarDatos = async (nombre_usuario, fecha, activo) => {
+    try {
+      const userData = {
+        nombre_usuario: nombre_usuario,
+        fecha: fecha,
+        activo: activo,
+      };
+
+      // Change "usuarios_registrados" to the name of your collection
+      const userRef = await addDoc(
+        collection(db, "usuarios_registrados"),
+        userData
+      );
+
+      //console.log("Document added with ID: ", userRef.id);
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
+  };
+
+  useEffect(() => {
+    if (registro) {
+      if (password.length < 8) {
+        setPasswordError("La contraseña debe tener al menos 8 caracteres");
+      } else if (!/[A-Z]/.test(password)) {
+        setPasswordError(
+          "La contraseña debe contener al menos una letra mayuscula"
+        );
+      } else {
+        setPasswordError("");
+      }
+    }
+  }, [password, registro]);
 
   return (
     <Box position={"relative"}>
@@ -100,8 +156,8 @@ const Login = () => {
         as={SimpleGrid}
         maxW={"6xl"}
         columns={{ base: 1, md: 2 }}
-        spacing={{ base: 10, lg: 32 }}
-        py={{ base: 10, sm: 20, lg: 32 }}
+        spacing={{ base: 10, lg: 10 }}
+        py={{ base: 10, sm: 20, lg: 8 }}
       >
         <Stack spacing={{ base: 10, md: 20 }}>
           <Heading
@@ -198,12 +254,27 @@ const Login = () => {
               </Text>
             </Heading>
             <Text color={"gray.500"} fontSize={{ base: "sm", sm: "md" }}>
-              TO-DO
+              {errorBase && (
+                <div style={{ color: "red" }}>{errorBase} & TO-DO</div>
+              )}
             </Text>
           </Stack>
           <Box as={"form"} mt={6} onSubmit={handlerSubmit}>
             <Stack spacing={2}>
-            <Input
+              {registro && (
+                <Input
+                  placeholder="Nombre usuario"
+                  bg={"gray.100"}
+                  border={0}
+                  color={"gray.500"}
+                  type={"text"}
+                  id={"nombre_usuario"}
+                  _placeholder={{
+                    color: "gray.500",
+                  }}
+                />
+              )}
+              <Input
                 placeholder="Correo Electronico"
                 bg={"gray.100"}
                 border={0}
@@ -214,6 +285,7 @@ const Login = () => {
                   color: "gray.500",
                 }}
               />
+
               <Input
                 placeholder="Clave"
                 bg={"gray.100"}
@@ -221,10 +293,14 @@ const Login = () => {
                 color={"gray.500"}
                 type={"password"}
                 id={"clave"}
+                onChange={(e) => setPassword(e.target.value)}
                 _placeholder={{
                   color: "gray.500",
                 }}
               />
+              {passwordError && (
+                <div style={{ color: "red" }}>{passwordError}</div>
+              )}
             </Stack>
             <Button
               fontFamily={"heading"}
@@ -236,9 +312,9 @@ const Login = () => {
               _hover={{
                 bgGradient: "linear(to-r, red.400,pink.400)",
                 boxShadow: "xl",
-              }}              
+              }}
             >
-              {registro ? "Registrate" : "Inicia sesion"}              
+              {registro ? "Registrate" : "Inicia sesion"}
             </Button>
             <Button
               fontFamily={"heading"}
@@ -255,10 +331,8 @@ const Login = () => {
               {registro
                 ? "Ya tienes cuenta? Inicia sesion"
                 : "No tienes cuenta? Registrate"}
-              
             </Button>
           </Box>
-          
         </Stack>
       </Container>
       <Blur
@@ -266,9 +340,9 @@ const Login = () => {
         top={-10}
         left={-10}
         style={{ filter: "blur(70px)" }}
+        zIndex={-1}
       />
     </Box>
-   
   );
 };
 
