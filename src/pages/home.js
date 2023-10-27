@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+
 import firebaseApp from "../Credentials";
 import { getAuth, signOut } from "firebase/auth";
 import {getFirestore, collection, addDoc, getDocs, doc, deleteDoc,getDoc, setDoc} from "firebase/firestore";
@@ -9,7 +10,7 @@ const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
 
 
-const Home = ({ correoUsuario }) => {
+const Home = () => {
 
     const valorInicial = {
         nombre: '',

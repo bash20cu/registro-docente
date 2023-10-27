@@ -4,6 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import {Button, CloseButton} from 'react-bootstrap'
 import './Navigation.css'
+import { Navigate } from 'react-router-dom';
 import { getAuth, signOut } from "firebase/auth";
 import firebaseApp from "../Credentials";
 const auth = getAuth(firebaseApp);
@@ -18,6 +19,19 @@ const dropdownItems = [
 
 
 function Navigation({ correoUsuario }) {
+
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem('usuario');
+      return <Navigate to="/auth" />; // Redirige al usuario a la página de inicio
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    }
+  };
+
+  
   return (
     <Navbar expand="lg" sticky="top" className="bg-body-tertiary">
       <Container>
@@ -40,7 +54,7 @@ function Navigation({ correoUsuario }) {
             </NavDropdown>
           </Nav>
           <NavDropdown title={correoUsuario}>
-            <NavDropdown.Item className="ml-auto" href='#' onClick={() => signOut(auth)} >
+            <NavDropdown.Item className="ml-auto" href='#' onClick={handleSignOut} >
               Cerrar Sesion
             </NavDropdown.Item>
           </NavDropdown>

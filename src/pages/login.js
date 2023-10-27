@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Navigate } from 'react-router-dom';
 import firebaseApp from "../Credentials";
 import { getFirestore, collection, addDoc, setDoc } from "firebase/firestore";
 
@@ -20,8 +21,6 @@ import {
   SimpleGrid,
   Avatar,
   AvatarGroup,
-  useBreakpointValue,
-  IconProps,
   Icon,
 } from "@chakra-ui/react";
 
@@ -50,8 +49,7 @@ const avatars = [
 const Blur = (props) => {
   return (
     <Icon
-      width={useBreakpointValue({ base: "100%", md: "40vw", lg: "30vw" })}
-      zIndex={useBreakpointValue({ base: -1, md: -1, lg: 0 })}
+     
       height="660px"
       viewBox="0 0 528 560"
       fill="none"
@@ -77,6 +75,9 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [errorBase, setErrorBase] = useState(null);
+  const [redirect, setRedirect] = useState(false); // Estado para controlar la redirección
+  
+  
 
   const handlerSubmit = async (e) => {
     e.preventDefault();
@@ -86,19 +87,19 @@ const Login = () => {
 
     if (registro) {
       const nombre_usuario = e.target.nombre_usuario.value;
+      console.log(nombre_usuario);
       try {
-        // Attempt to save user data to Firestore first
-        await guardarDatos(nombre_usuario, new Date(), true);
+        // Attempt to save user data to Firestore first email account      
+        await createUserWithEmailAndPassword(auth, correo, clave);
 
-        // If saving data to Firestore is successful, proceed to create the user
+        // If saving data to Firestore is successful, proceed to create the user on db
         try {
-          const userCredential = await createUserWithEmailAndPassword(
-            auth,
-            correo,
-            clave
-          );
+          await guardarDatos(nombre_usuario, new Date(), true);
           // At this point, user registration is complete
           //console.log("User registered successfully:", userCredential.user);
+          localStorage.setItem('usuario', JSON.stringify(auth));
+          //console.log("User registered successfully:", userCredential.user);
+          setRedirect(true);
         } catch (error) {
           setErrorBase(error.message);
           console.log(errorBase);
@@ -109,6 +110,8 @@ const Login = () => {
     } else {
       try {
         await signInWithEmailAndPassword(auth, correo, clave);
+        localStorage.setItem('usuario', JSON.stringify(auth));
+        setRedirect(true);
       } catch (error) {
         setErrorBase(error.message);
         console.log(error);
@@ -119,6 +122,8 @@ const Login = () => {
   const guardarDatos = async (nombre_usuario, fecha, activo) => {
     try {
       const userData = {
+        id: auth.currentUser.uid,
+        email: auth.currentUser.email,
         nombre_usuario: nombre_usuario,
         fecha: fecha,
         activo: activo,
@@ -149,6 +154,11 @@ const Login = () => {
       }
     }
   }, [password, registro]);
+
+    // Redirige al usuario si el estado de redirección es true
+    if (redirect) {
+      return <Navigate to="/home" />;
+    }
 
   return (
     <Box position={"relative"}>
@@ -182,7 +192,7 @@ const Login = () => {
                   name={avatar.name}
                   src={avatar.url}
                   // eslint-disable-next-line react-hooks/rules-of-hooks
-                  size={useBreakpointValue({ base: "md", md: "lg" })}
+                  size={"md"}
                   position={"relative"}
                   zIndex={2}
                   _before={{
@@ -200,35 +210,6 @@ const Login = () => {
                 />
               ))}
             </AvatarGroup>
-            <Text fontFamily={"heading"} fontSize={{ base: "4xl", md: "6xl" }}>
-              +
-            </Text>
-            <Flex
-              align={"center"}
-              justify={"center"}
-              fontFamily={"heading"}
-              fontSize={{ base: "sm", md: "lg" }}
-              bg={"gray.800"}
-              color={"white"}
-              rounded={"full"}
-              minWidth={useBreakpointValue({ base: "44px", md: "60px" })}
-              minHeight={useBreakpointValue({ base: "44px", md: "60px" })}
-              position={"relative"}
-              _before={{
-                content: '""',
-                width: "full",
-                height: "full",
-                rounded: "full",
-                transform: "scale(1.125)",
-                bgGradient: "linear(to-bl, orange.400,yellow.400)",
-                position: "absolute",
-                zIndex: -1,
-                top: 0,
-                left: 0,
-              }}
-            >
-              Tú
-            </Flex>
           </Stack>
         </Stack>
         <Stack
