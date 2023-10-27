@@ -63,7 +63,31 @@ function App() {
           }
         />
         <Route
+          path="/auth/"
+          element={
+            isUsuarioAutenticado() ? <Navigate to="/home" /> : <Login />
+          }
+        />
+        <Route
           path="/home"
+          element={
+            isUsuarioAutenticado() ? <Home /> : <Navigate to="/auth" />
+          }
+        />
+        <Route
+          path="/home/"
+          element={
+            isUsuarioAutenticado() ? <Home /> : <Navigate to="/auth" />
+          }
+        />
+        <Route
+          path="/registro-docente"
+          element={
+            isUsuarioAutenticado() ? <Home /> : <Navigate to="/auth" />
+          }
+        />
+        <Route
+          path="/registro-docente/"
           element={
             isUsuarioAutenticado() ? <Home /> : <Navigate to="/auth" />
           }
