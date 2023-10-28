@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/registro-docente/static/css/main.5bf368b8.css",
-    "main.js": "/registro-docente/static/js/main.6dbffc16.js",
+    "main.js": "/registro-docente/static/js/main.48b6f2be.js",
     "index.html": "/registro-docente/index.html",
     "main.5bf368b8.css.map": "/registro-docente/static/css/main.5bf368b8.css.map",
-    "main.6dbffc16.js.map": "/registro-docente/static/js/main.6dbffc16.js.map"
+    "main.48b6f2be.js.map": "/registro-docente/static/js/main.48b6f2be.js.map"
   },
   "entrypoints": [
     "static/css/main.5bf368b8.css",
-    "static/js/main.6dbffc16.js"
+    "static/js/main.48b6f2be.js"
   ]
 }
