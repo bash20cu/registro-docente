@@ -9,10 +9,13 @@ import {
 
 //Components
 import Navigation from "./components/Navigation.js";
+import ProtectedRoute from "./components/protectedRoutes.js";
 
 // Pages
-import Home from "./pages/home1.js";
+import Home from "./pages/home.js";
 import Login from "./pages/login.js";
+
+
 
 //Base de datos
 import firebaseApp from "./Credentials";
@@ -52,42 +55,36 @@ function App() {
     return usuario !== null;
   };
 
+
+
+
+
   return (
-    <div className="App">    
-    {usuario && <Navigation correoUsuario={usuario.email} />} 
+    <div className="App">
+      {usuario && (
+        <Navigation
+          correoUsuario={usuario.email}          
+        />
+      )}
       <Routes>
-        <Route
-          path="/auth"
-          element={
-            isUsuarioAutenticado() ? <Navigate to="/home" /> : <Login />
-          }
-        />
-        <Route
-          path="/registro-docente/auth/"
-          element={
-            isUsuarioAutenticado() ? <Navigate to="/home" /> : <Login />
-          }
-        />
-        <Route
-          path="/home"
-          element={
-            isUsuarioAutenticado() ? <Home /> : <Navigate to="/auth" />
-          }
-        />
-        <Route
-          path="/registro-docente/home/"
-          element={
-            isUsuarioAutenticado() ? <Home /> : <Navigate to="/auth" />
-          }
-        />
-        <Route
-          path="/registro-docente/"
-          element={
-            isUsuarioAutenticado() ? <Home /> : <Navigate to="/auth" />
-          }
-        />
+        <Route path="*" element={<h1> Error - 404 - Not Found</h1>} />
+        <Route path="/registro-docente/" element={<Login />} />
+        <Route element={<ProtectedRoute canActivate={isUsuarioAutenticado} />}>
+          <Route path="/registro-docente/registro" element={<Home />} />
+        </Route>
+        <Route element={<ProtectedRoute canActivate={isUsuarioAutenticado} />}>
+          <Route
+            path="/registro-docente/agregar-colegio"
+            // element={
+            //   <AgregarColegioModal
+            //     show={agregarColegioShow}
+            //     onHide={() => setAgregarColegioShow(false)}
+            //     onAgregarColegio={handleAgregarColegio}
+            //   />
+            // }
+          />
+        </Route>
       </Routes>
-      
     </div>
   );
 }

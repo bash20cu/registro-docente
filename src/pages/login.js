@@ -157,7 +157,7 @@ const Login = () => {
 
     // Redirige al usuario si el estado de redirección es true
     if (redirect) {
-      return <Navigate to="/home" />;
+      return <Navigate to="/registro-docente/registro" />;
     }
 
   return (
