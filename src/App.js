@@ -11,7 +11,7 @@ import {
 import Navigation from "./components/Navigation.js";
 
 // Pages
-import Home from "./pages/home.js";
+import Home from "./pages/home1.js";
 import Login from "./pages/login.js";
 
 //Base de datos
@@ -63,7 +63,7 @@ function App() {
           }
         />
         <Route
-          path="/auth/"
+          path="/registro-docente/auth/"
           element={
             isUsuarioAutenticado() ? <Navigate to="/home" /> : <Login />
           }
@@ -75,13 +75,7 @@ function App() {
           }
         />
         <Route
-          path="/home/"
-          element={
-            isUsuarioAutenticado() ? <Home /> : <Navigate to="/auth" />
-          }
-        />
-        <Route
-          path="/registro-docente"
+          path="/registro-docente/home/"
           element={
             isUsuarioAutenticado() ? <Home /> : <Navigate to="/auth" />
           }

@@ -34,8 +34,7 @@ function Navigation({ correoUsuario }) {
   
   return (
     <Navbar expand="lg" sticky="top" className="bg-body-tertiary">
-      <Container>
-        
+      <Container>        
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
@@ -54,7 +53,7 @@ function Navigation({ correoUsuario }) {
             </NavDropdown>
           </Nav>
           <NavDropdown title={correoUsuario}>
-            <NavDropdown.Item className="ml-auto" href='#' onClick={handleSignOut} >
+            <NavDropdown.Item  href='#' onClick={handleSignOut} >
               Cerrar Sesion
             </NavDropdown.Item>
           </NavDropdown>

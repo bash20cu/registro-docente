@@ -127,56 +127,8 @@ const Home = () => {
 
   return (
     <div className="container">
-      <hr />
-
-      <div className="row">
-        {/* esta seccion es para el formulario */}
-        <div className="col-md-4">
-          <h3 className="text-center mb-3">Formulario de registro</h3>
-          <form onSubmit={guardarDatos}>
-            <div className="card card-body">
-              <div className="form-group">
-                <input type="text" className="form-control mb-2" placeholder="Nombre" name="nombre"
-                onChange={capturarDatos} value={usuario.nombre}/>
-                <input type="text" className="form-control mb-2" placeholder="Primer Apellido" name="apellido1" 
-                onChange={capturarDatos} value={usuario.apellido1}/>
-                <input type="text" className="form-control mb-2" placeholder="Segundo Apellido" name="apellido2"
-                onChange={capturarDatos} value={usuario.apellido2}/>
-                <input type="text" className="form-control mb-2" placeholder="Edad" name="edad"
-                onChange={capturarDatos} value={usuario.edad}/>
-                <input type="text" className="form-control mb-2" placeholder="Grupo" name="grupo" 
-                onChange={capturarDatos} value={usuario.grupo}/>
-              </div>
-                <button className="btn btn-primary mb-2">
-                  {subId === '' ? 'Guardar' : 'Actualizar'}
-                </button>
-            </div>
-          </form>
-        </div>
-        {/* esta seccion es para la tabla de usuarios */}
-        <div className="col-md-6">
-          <h2 className="text-center mb-2 ">Lista de usuarios</h2>
-          <div className="container card">
-            <div className="card-body">
-                {
-                    lista.map(lista => (
-                        <div  key={lista.id}>
-                            <p>Nombre: {lista.nombre}</p>
-                            <p>Apellido: {lista.apellido1}</p>
-                            <p>Apellido: {lista.apellido2}</p>
-                            <p>Edad: {lista.edad}</p>
-                            <p>Grupo: {lista.grupo}</p>
-                            <button className="btn btn-danger m-2" onClick={()=>eliminarUsuario(lista.id)} >Eliminar</button>
-                            <button className="btn btn-success m-2" onClick={()=>setsubId(lista.id)}>Editar</button>
-                            <hr/>
-                        </div>
-                    ))
-                }
-            </div>
-          </div>
-        </div>
+      <h1>Home page</h1>
       </div>
-    </div>
   );
 };
 
