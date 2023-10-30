@@ -27,7 +27,7 @@ class crudFirebase{
         }
     }
     //Metodo para obtener todos los usuarios de la base de datos
-    async obtenerUsuarios(dbDocument){
+    async obtenerDocumentos(dbDocument){
         const querySnapshot = await getDocs(collection(db, dbDocument));
         const lista = querySnapshot.docs.map((doc) => ({
             id: doc.id,
@@ -36,7 +36,7 @@ class crudFirebase{
         return lista;
     }
     //Metodo para eliminar un usuario de la base de datos
-    async eliminar(dbDocument,id){
+    async eliminar(db,dbDocument,id){
         try {
             await deleteDoc(doc(db, dbDocument, id));
             return id;

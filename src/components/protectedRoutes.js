@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = ({
   canActivate,
-  redirectPath = "/registro-docente/",
+  redirectPath = "/registro-docente",
 }) => {
   if (!canActivate) {
     console.log(canActivate);

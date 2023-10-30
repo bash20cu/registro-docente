@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -7,6 +7,7 @@ import './Navigation.css'
 import { Navigate, Link} from 'react-router-dom';
 import { getAuth, signOut } from "firebase/auth";
 import firebaseApp from "../Credentials";
+import { useDisclosure } from "@chakra-ui/react"
 
 
 //Modal
@@ -16,14 +17,25 @@ import AgregarColegioModal from "../pages/modal/agregarColegio.js";
 const auth = getAuth(firebaseApp);
 
 
-function Navigation({ correoUsuario}) {
+function Navigation({ triggerReload }) {
+
+  //const [usuario, setUsuario] = useState("");
+  const [loading, setLoading] = useState(true);
+  const usuarioGuardado = localStorage.getItem("usuario");
+  const usuario = usuarioGuardado ? JSON.parse(usuarioGuardado) : null;
+  const [reloadData, setReloadData] = useState(false);
+
+  // Verificar si hay un usuario autenticado en el localStorage
+  //console.log(usuario.email);
+
+
 
   //Cerrar Sesion del usuario
   const handleSignOut = async () => {
     try {
       await signOut(auth);
       localStorage.removeItem('usuario');
-      return <Navigate to="/registro-docente/" replace />; // Redirige al usuario a la página de inicio
+      //console.log('Sesión cerrada');
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
     }
@@ -31,9 +43,13 @@ function Navigation({ correoUsuario}) {
 
   //Props de modal agregar colegio
   const [agregarColegioShow, setAgregarColegioShow] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
   
   const handleAgregarColegioClick = () => {    
-    setAgregarColegioShow(true);
+    //console.log('Agregar colegio');
+    onOpen();
+    //setAgregarColegioShow(true);
     //console.log(setAgregarColegioShow);
   }; 
   
@@ -44,7 +60,7 @@ function Navigation({ correoUsuario}) {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={Link} to='/registro-docente/registro' >  Home </Nav.Link>
+            <Nav.Link as={Link} to='/registro-docente/home' >  Home </Nav.Link>
 
             <Nav.Link href="#link">Link</Nav.Link>
 
@@ -52,6 +68,10 @@ function Navigation({ correoUsuario}) {
               <NavDropdown.Item  
                  onClick={handleAgregarColegioClick}
                 > Colegio </NavDropdown.Item>
+                <AgregarColegioModal  
+                triggerReload={() => setReloadData(!reloadData)}
+                isOpen={isOpen}
+                onClose={onClose}   />
               <NavDropdown.Item href="#action/3.2">Grupo</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.3">Estudiante</NavDropdown.Item>
               <NavDropdown.Divider />
@@ -59,11 +79,24 @@ function Navigation({ correoUsuario}) {
                 Separated link
               </NavDropdown.Item>
             </NavDropdown>
-
-
           </Nav>
-          <NavDropdown title={correoUsuario}>
-            <NavDropdown.Item  onClick={handleSignOut} >
+          {
+            usuario ? (
+              <Nav className="ml-auto" title= {usuario.email}>
+                <Nav.Link as={Link} to='/registro-docente'  onClick={handleSignOut} >
+                  Cerrar Sesion
+                </Nav.Link>
+              </Nav>
+            ) : (
+              <Nav className="ml-auto">
+                <Nav.Link as={Link} to='/registro-docente' >
+                  Iniciar Sesion
+                </Nav.Link>
+              </Nav>
+            )
+          }
+          <NavDropdown title= {usuario.email}>
+            <NavDropdown.Item as={Link} to='/registro-docente'  onClick={handleSignOut} >
               Cerrar Sesion
             </NavDropdown.Item>
           </NavDropdown>
@@ -73,31 +106,8 @@ function Navigation({ correoUsuario}) {
     <AgregarColegioModal
     show={agregarColegioShow}
     onHide={() => setAgregarColegioShow(false)}
-    // onAgregarColegio={handleAgregarColegio}
     />
-
-
-
     </div>
-  );
-}
-
-
-// Contruir los dropdown
-
-function NavDropdownBuilder({ dropdownTitle, items }) {
-  if (!Array.isArray(items) || items.length === 0) {
-    return null;
-  }
-
-  return (
-    <NavDropdown title={dropdownTitle} id="basic-nav-dropdown">
-      {items.map((item, index) => (
-        <NavDropdown.Item key={index} href={item.link}>
-          {item.name}
-        </NavDropdown.Item>
-      ))}
-    </NavDropdown>
   );
 }
 

@@ -102,7 +102,7 @@ const Login = () => {
           setRedirect(true);
         } catch (error) {
           setErrorBase(error.message);
-          console.log(errorBase);
+          //console.log(errorBase);
         }
       } catch (error) {
         setErrorBase(error.message);
@@ -157,7 +157,7 @@ const Login = () => {
 
     // Redirige al usuario si el estado de redirección es true
     if (redirect) {
-      return <Navigate to="/registro-docente/registro" />;
+      return <Navigate to="/registro-docente/home" />;
     }
 
   return (

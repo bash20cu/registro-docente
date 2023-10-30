@@ -25,6 +25,25 @@ const auth = getAuth(firebaseApp);
 function App() {
   const [usuario, setUsuario] = useState(null);
 
+  useEffect(() => {
+    // Agrega un evento antes de que la página se recargue
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // Elimina el evento al desmontar el componente
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
+
+  const handleBeforeUnload = (event) => {
+    const currentUrl = window.location.href;
+    window.location.href = currentUrl;
+
+    // Mensaje opcional que se mostrará antes de recargar
+    event.returnValue = 'Seguro que deseas recargar la página?';
+  };
+
+
   // Verificar si hay un usuario autenticado en el localStorage
   useEffect(() => {
     const usuarioGuardado = localStorage.getItem("usuario");
@@ -33,6 +52,8 @@ function App() {
       const usuarioParseado = JSON.parse(usuarioGuardado);
       setUsuario(usuarioParseado);
     }
+
+    
 
     const unsubscribe = onAuthStateChanged(auth, (usuarioFireBase) => {
       if (usuarioFireBase) {
@@ -61,29 +82,12 @@ function App() {
 
   return (
     <div className="App">
-      {usuario && (
-        <Navigation
-          correoUsuario={usuario.email}          
-        />
-      )}
-      <Routes>
+      <Routes>        
+        <Route path="/registro-docente" element={<Login />} />
+        <Route element={<ProtectedRoute canActivate={isUsuarioAutenticado} />}>
+          <Route path="/registro-docente/home" element={<Home />} />
+        </Route>
         <Route path="*" element={<h1> Error - 404 - Not Found</h1>} />
-        <Route path="/registro-docente/" element={<Login />} />
-        <Route element={<ProtectedRoute canActivate={isUsuarioAutenticado} />}>
-          <Route path="/registro-docente/registro" element={<Home />} />
-        </Route>
-        <Route element={<ProtectedRoute canActivate={isUsuarioAutenticado} />}>
-          <Route
-            path="/registro-docente/agregar-colegio"
-            // element={
-            //   <AgregarColegioModal
-            //     show={agregarColegioShow}
-            //     onHide={() => setAgregarColegioShow(false)}
-            //     onAgregarColegio={handleAgregarColegio}
-            //   />
-            // }
-          />
-        </Route>
       </Routes>
     </div>
   );

@@ -4,6 +4,17 @@ import { useNavigate } from 'react-router-dom';
 import crudFirebase from "../../lib/crudFirebase.js";
 import {  getAuth,} from "firebase/auth";
 
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+} from '@chakra-ui/react';
+
+
 const firebaseCrud = new crudFirebase();
 
 function AgregarColegioModal(props) {
@@ -26,34 +37,63 @@ function AgregarColegioModal(props) {
     props.onHide();
   };
 
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
   return (
-    <Modal {...props} centered>
-      <Modal.Header closeButton>
-        <Modal.Title>Agregar Colegio</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form>
-          <Form.Group>
-            <Form.Label>Nombre del Colegio</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Nombre del colegio"
-              value={nombreColegio}
-              onChange={(e) => setNombreColegio(e.target.value)}
-            />
-          </Form.Group>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={props.onHide}>
-          Cerrar
-        </Button>
-        <Button variant="primary" onClick={handleAgregarAlumno}>
-          Agregar Colegio
-        </Button>
-      </Modal.Footer>
-    </Modal>
+    <>
+      <Button onClick={onOpen}>Open Modal</Button>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Modal Title</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Lorem count={2} />
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme='blue' mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button variant='ghost'>Secondary Action</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   );
+
+
+
+
+  // return (
+  //   <Modal {...props} centered>
+  //     <Modal.Header closeButton>
+  //       <Modal.Title>Agregar Colegio</Modal.Title>
+  //     </Modal.Header>
+  //     <Modal.Body>
+  //       <Form>
+  //         <Form.Group>
+  //           <Form.Label>Nombre del Colegio</Form.Label>
+  //           <Form.Control
+  //             type="text"
+  //             placeholder="Nombre del colegio"
+  //             value={nombreColegio}
+  //             onChange={(e) => setNombreColegio(e.target.value)}
+  //           />
+  //         </Form.Group>
+  //       </Form>
+  //     </Modal.Body>
+  //     <Modal.Footer>
+  //       <Button variant="secondary" onClick={props.onHide}>
+  //         Cerrar
+  //       </Button>
+  //       <Button variant="primary" onClick={handleAgregarAlumno}>
+  //         Agregar Colegio
+  //       </Button>
+  //     </Modal.Footer>
+  //   </Modal>
+  // );
 }
 
 export default AgregarColegioModal;

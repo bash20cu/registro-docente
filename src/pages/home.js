@@ -1,134 +1,98 @@
-import React, {useEffect, useState} from "react";
-
+import React, { useEffect, useState } from "react";
+import useLocalStorage from "react-use-localstorage";
+import Navigation from "../components/Navigation.js";
 import firebaseApp from "../Credentials";
 import { getAuth, signOut } from "firebase/auth";
-import {getFirestore, collection, addDoc, getDocs, doc, deleteDoc,getDoc, setDoc} from "firebase/firestore";
-import DbTest from "../components/database.js";
+import { getFirestore } from "firebase/firestore";
+import { Box, Grid, GridItem } from "@chakra-ui/react";
 
+//Colegio
+
+import Colegio from "../components/colegio.js";
 
 const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
 
-
 const Home = () => {
+  //variables de estado
+  const [usuario, setUsuario] = useState(null);
 
-    const valorInicial = {
-        nombre: '',
-        apellido1: '',
-        apellido2: '',
-        edad: '',
-        grupo: ''
-        }
-    //variables de estado
-    const [usuario, setUsuario] = useState(valorInicial);
-    const [lista, setLista] = useState([]);
-    const [subId, setsubId] = useState('');
+  const [localStorageLoaded, setLocalStorageLoaded] = useState(false);
+  const [reloadData, setReloadData] = useState(false);
 
-    const capturarDatos = (e) => {
-        setUsuario({
-            ...usuario,
-            [e.target.name]: e.target.value
-        })    
+  useEffect(() => {
+    const usuarioGuardado = localStorage.getItem("usuario");
+    if (usuarioGuardado) {
+      const usuarioParseado = JSON.parse(usuarioGuardado);
+      setUsuario(usuarioParseado);
     }
-    
-    //Funcion para guardar los datos a la base de datos
-    const guardarDatos = async (e) => {
-      e.preventDefault();
-      console.log(usuario);
-  
-      if (subId === '') {
-          try {
-              const docRef = await addDoc(collection(db, "alumnos"), {
-                  ...usuario
-              });
-  
-              // Agregar el nuevo usuario a la lista
-              const newUser = { ...usuario, id: docRef.id };
-              setLista([...lista, newUser]);
-  
-          } catch (error) {
-              console.log(error);
-          }
-      } else {
-          try {
-              await setDoc(doc(db, "alumnos", subId), {
-                  ...usuario
-              });
-  
-              // Actualizar la lista con el usuario modificado
-              const updatedList = lista.map(item => {
-                  if (item.id === subId) {
-                      return { ...usuario, id: subId };
-                  }
-                  return item;
-              });
-              setLista(updatedList);
-  
-          } catch (error) {
-              console.log(error);
-          }
-      }
-      setUsuario(valorInicial);
-      setsubId('');
-  }
+    //console.log(usuario);
+    setLocalStorageLoaded(true);
+    //console.log(toString(usuario.email));
+  }, []);
 
-    {/* Funciones para renderizar la lista de usuarios */}
-    useEffect(() => {
-        const obtenerDatos = async () => {          
-            try {
-                const datos = await getDocs(collection(db,"alumnos"));
-                const arrayDatos = []
-                datos.forEach((dato) => {
-                    arrayDatos.push({...dato.data(), id: dato.id})
-                })
-                setLista(arrayDatos); 
-                            
-                
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        obtenerDatos();
-        
-        //DbTest();
-    },[]);
-
-    //Funcion para eliminar el usuario
-    const eliminarUsuario = async (id) => {
-      try {
-          await deleteDoc(doc(db, "alumnos", id));
-  
-          // Eliminar el usuario de la lista
-          const updatedList = lista.filter(item => item.id !== id);
-          setLista(updatedList);
-  
-      } catch (error) {
-          console.log(error);
-      }
-  }
-
-    //Funcion para actualizar el usuario
-    const getOne = async (id) => {
-      try {
-        const datos = await getDoc(doc(db, "alumnos", id));
-        setUsuario(datos.data())
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    useEffect(() => {
-      if(subId !== ''){
-        getOne(subId);
-        
-      }
-    },[subId]);
-
+  useEffect(() => {
+    // Este código se ejecutará una vez al cargar la página Home
+    // Puedes agregar aquí cualquier inicialización o carga de datos necesarios
+    console.log("Cargando página Home");
+  }, [reloadData]);
 
   return (
-    <div className="container">
-      <h1>Home page</h1>
+    <>
+      <Navigation triggerReload={() => setReloadData(!reloadData)} />
+      <div className="container">
+        <h1>Home page</h1>
       </div>
+
+      <Grid
+        templateRows={{ base: "repeat(2, 1fr)", md: "repeat(1, 1fr)" }}
+        templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)" }}
+        gap={4}
+      >
+        <GridItem>
+          <Box
+            borderRadius="lg"
+            background="blue.100" // Cambia el color de fondo aquí
+            boxShadow="md"
+            p={4}
+            m={2}
+          >
+            <Colegio />
+          </Box>
+        </GridItem>
+        <GridItem>
+          <Box
+            borderRadius="lg"
+            background="green.100" // Cambia el color de fondo aquí
+            boxShadow="md"
+            p={4}
+            borderColor="gray.200"
+          >
+            <Colegio />
+          </Box>
+        </GridItem>
+        <GridItem>
+          <Box
+            borderRadius="lg"
+            background="red.100" // Cambia el color de fondo aquí
+            boxShadow="md"
+            p={4}
+          >
+            <Colegio />
+          </Box>
+        </GridItem>
+        <GridItem>
+          <Box
+            borderRadius="lg"
+            background="purple.100" // Cambia el color de fondo aquí
+            boxShadow="md"
+            p={4}
+          >
+            <Colegio />
+          </Box>
+        </GridItem>
+      </Grid>
+    </>
   );
 };
 
